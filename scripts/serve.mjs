@@ -13,6 +13,13 @@ const config = {
   logLevel: "info",
   metafile: true,
   write: false,
+  watch: {
+    onRebuild(error, result) {
+      if (error) console.error('watch build failed:', error)
+      else console.log('watch build succeeded:', result)
+    },
+    
+  },
   plugins: [
     solidPlugin(),
     htmlPlugin({ 

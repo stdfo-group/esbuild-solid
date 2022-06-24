@@ -5,9 +5,10 @@
   "scripts": {
     "build": "node ./scripts/build.mjs",
     "clean": "rm -rf ./node_modules ./dist ./yarn.lock .yarn-error.log",
-    
-    "dev": "node ./scripts/dev.mjs",
+    "dev": "esbuild index.js --outfile=dist_dev/app.js --bundle --sourcemap --watch",
     "serve": "servor ./dist/ index.html --static",
+    "dev:file": "node ./scripts/dev.mjs",
+    "serve1": "node ./scripts/serve.mjs",
     "dev:cli": "mkdir -p ./www && cp ./public/* ./www/* && esbuild --bundle ./src/index.tsx --outdir=./www --servedir=www && rm -rf ./www"
   },
   "license": "MIT",
