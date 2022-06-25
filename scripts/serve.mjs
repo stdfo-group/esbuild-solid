@@ -1,60 +1,57 @@
-import esbuild from 'esbuild'
-import { solidPlugin } from 'esbuild-plugin-solid'
-import { compress } from 'esbuild-plugin-compress'
-import { htmlPlugin } from '@craftamap/esbuild-plugin-html'
+import http from 'http'
+import url from 'url'
+import path from 'path'
 import fs from 'fs'
-import { exec } from 'child_process'
 
-const config = {
-  entryPoints: ['./src/index.tsx'],
-  bundle: true,
-  outdir: './dist',
-  minify: true,
-  logLevel: 'info',
-  metafile: true,
-  write: false,
-  watch: {
-    onRebuild(error, result) {
-      if (error) console.error('watch build failed:', error)
-      else console.log('watch build succeeded:', result)
-    },
-  },
-  plugins: [
-    solidPlugin(),
-    htmlPlugin({
-      files: [
-        {
-          entryPoints: ['src/index.tsx'],
-          filename: 'index.html',
-          htmlTemplate: './public/index.html',
-          findRelatedOutputFiles: false,
-          title: 'Test App',
-          scriptLoading: 'module',
-          favicon: './public/favicon.ico',
-        },
-      ],
-    }),
-    compress({
-      gzip: true,
-      brotli: true,
-    }),
-  ],
+// eslint-disable-next-line no-undef
+const port = process.argv[2] || 8888
+
+const contentTypesByExtension = {
+  '.html': 'text/html',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.ico': 'image/x-icon',
 }
 
-fs.rmSync('./dist', { recursive: true, force: true })
-fs.existsSync('./dist') || fs.mkdirSync('./dist')
+http
+  .createServer(function (request, response) {
+    const uri = url.parse(request.url).pathname
+    console.log(`${request.method} ${uri}`)
+    // eslint-disable-next-line no-undef
+    let filename = path.join(process.cwd(), 'dist', uri)
 
-let result = await esbuild.build(config)
+    fs.exists(filename, function (exists) {
+      if (!exists) {
+        response.writeHead(404, { 'Content-Type': 'text/plain' })
+        response.write('404 Not Found\n')
+        response.end()
+        return
+      }
 
-const statsDir = './dist/stats'
-fs.existsSync(statsDir) || fs.mkdirSync(statsDir)
-fs.writeFileSync(`${statsDir}/meta.json`, JSON.stringify(result.metafile))
-exec(`esbuild-visualizer --metadata ${statsDir}/meta.json --filename ${statsDir}/stats.html`, (err, stdout, stderr) => {
-  if (err) {
-    console.error(`esbuild-visualizer error: ${err}`)
-    console.log(stderr)
-    return
-  }
+      if (fs.statSync(filename).isDirectory()) {
+        filename += '/index.html'
+      }
 
-  console.log(`${stdout}`)
-})
+      fs.readFile(filename, 'binary', function (err, file) {
+        if (err) {
+          response.writeHead(500, { 'Content-Type': 'text/plain' })
+          response.write(err + '\n')
+          response.end()
+          return
+        }
+
+        var headers = {}
+        headers['access-control-allow-origin'] = '*'
+        var contentType = contentTypesByExtension[path.extname(filename)]
+        if (contentType) headers['Content-Type'] = contentType
+        response.writeHead(200, headers)
+        response.write(file, 'binary')
+        response.end()
+      })
+    })
+  })
+  .listen(parseInt(port, 10))
+
+console.log(
+  `Static file server running at\n  => http://localhost: ${port}/\nCTRL + C to shutdown, CTRL + F5 for favicon`
+)

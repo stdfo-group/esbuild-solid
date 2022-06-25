@@ -10,10 +10,9 @@
     "prettier": "prettier --check --ignore-unknown .",
     "prettier:fix": "prettier --write --list-different .",
     "format": "yarn eslint:fix && yarn prettier:fix",
+    "serve": "node ./scripts/serve.mjs",
     "dev": "esbuild index.js --outfile=dist_dev/app.js --bundle --sourcemap --watch",
-    "serve": "servor ./dist/ index.html --static",
     "dev:file": "node ./scripts/dev.mjs",
-    "serve1": "node ./scripts/serve.mjs",
     "dev:cli": "mkdir -p ./www && cp ./public/* ./www/* && esbuild --bundle ./src/index.tsx --outdir=./www --servedir=www && rm -rf ./www"
   },
   "license": "MIT",
@@ -28,13 +27,13 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-solid": "^0.7.0",
-    "typescript": "^4.7.4",
     "prettier": "^2.7.1",
-    "servor": "^4.0.2"
+    "servor": "^4.0.2",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
-    "solid-icons": "0.4.13",
     "@suid/material": "0.4.3",
+    "solid-icons": "0.4.13",
     "solid-js": "1.4.4"
   }
 }
