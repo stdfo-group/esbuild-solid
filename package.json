@@ -5,6 +5,8 @@
   "scripts": {
     "build": "node ./scripts/build.mjs",
     "clean": "rm -rf ./node_modules ./dist ./yarn.lock .yarn-error.log",
+    "prettier": "prettier --check --ignore-unknown .",
+    "prettier:fix": "prettier --write --list-different .",
     "dev": "esbuild index.js --outfile=dist_dev/app.js --bundle --sourcemap --watch",
     "serve": "servor ./dist/ index.html --static",
     "dev:file": "node ./scripts/dev.mjs",
@@ -13,11 +15,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@craftamap/esbuild-plugin-html":"0.4.0",
+    "@craftamap/esbuild-plugin-html": "0.4.0",
     "esbuild": "^0.14.47",
     "esbuild-plugin-compress": "^0.3.0",
     "esbuild-plugin-solid": "^0.4.2",
     "esbuild-visualizer": "^0.3.1",
+    "prettier": "^2.7.1",
     "servor": "^4.0.2"
   },
   "dependencies": {

@@ -1,21 +1,21 @@
-require("esbuild")
+require('esbuild')
   .serve(
     {
-      servedir: "www",
+      servedir: 'www',
       port: 8000,
-      host: "localhost"
+      host: 'localhost',
     },
     {
-      entryPoints: ["www/index.js"],
-      outdir: "www",
+      entryPoints: ['www/index.js'],
+      outdir: 'www',
       bundle: true,
       loader: {
-        ".png": "dataurl",
-        ".jpg": "file",
+        '.png': 'dataurl',
+        '.jpg': 'file',
       },
     }
   )
-  .then((_server) => {
-      console.log("Server is running at: http://localhost:8000/")
+  .then(_server => {
+    console.log('Server is running at: http://localhost:8000/')
     // server.stop();
-  });
+  })

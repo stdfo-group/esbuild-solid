@@ -345,16 +345,16 @@
     "@suid/utils" "0.3.0"
 
 "@suid/icons-material@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@suid/icons-material/-/icons-material-0.2.4.tgz#fa5f59dbb78f69024b3ea5d33fc6b60f5ac8dd9a"
-  integrity sha512-qwARUrMULgmbp2tR0QvMsBsxtmDTT2M2FHIoyVmDUbwioMn5B1jikZG8K6QwZHhnJOwYLskxa76Zrl0w6xiDdw==
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@suid/icons-material/-/icons-material-0.2.5.tgz#e9138a566673a34d1145af3fdf7cdd98f300819c"
+  integrity sha512-zjsIjH2UcVXO20cfxXNc3FB5ni2eijsiMe7pNFGJcTOT8NTqb8STGnXgNPUNtPfHeTWrXrAbsD/r7kH27h4DVg==
   dependencies:
-    "@suid/material" "0.4.2"
+    "@suid/material" "0.4.3"
 
-"@suid/material@0.4.2", "@suid/material@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@suid/material/-/material-0.4.2.tgz#3ae0be6f5eaa70b6e0000a6f2e348053aa71778b"
-  integrity sha512-nKeCnmDtWfkupLu3gRncvXWh4x01iUUmAA1spN6dzrmTSZwnN5W5zPLqENfeq6MgVxZPnxt3V7JKcESj2UJzMg==
+"@suid/material@0.4.3", "@suid/material@^0.4.2":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@suid/material/-/material-0.4.3.tgz#86fbf52820cb648b961a33bda2d214721d8acd44"
+  integrity sha512-V56pkG2Kx47Mkjds4la7Dr0oV+B2vVu7Z00t5312HttLD+tb73l5AQjduIPVQUUelSCgqgBC30D6or49SueZrA==
   dependencies:
     "@suid/base" "0.2.5"
     "@suid/css" "0.1.4"
@@ -492,9 +492,9 @@ browserslist@^4.20.2:
     update-browserslist-db "^1.0.0"
 
 caniuse-lite@^1.0.30001358:
-  version "1.0.30001358"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001358.tgz#473d35dabf5e448b463095cab7924e96ccfb8c00"
-  integrity sha512-hvp8PSRymk85R20bsDra7ZTCpSVGN/PAz9pSAjPSjKC+rNmnUk5vCRgJwiTT/O4feQ/yu/drvZYpKxxhbFuChw==
+  version "1.0.30001359"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001359.tgz#a1c1cbe1c2da9e689638813618b4219acbd4925e"
+  integrity sha512-Xln/BAsPzEuiVLgJ2/45IaqD9jShtk3Y33anKb4+yLwQzws3+v6odKfpgES/cDEaZMLzSChpIGdbOYtH9MyuHw==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -626,9 +626,9 @@ domexception@^2.0.1:
     webidl-conversions "^5.0.0"
 
 electron-to-chromium@^1.4.164:
-  version "1.4.168"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.168.tgz#8f6bda320a434ac963850d18e41d83220973cbdd"
-  integrity sha512-yz247hclRBaP8ABB1hf9kL7AMfa+yC2hB9F3XF8Y87VWMnYgq4QYvV6acRACcDkTDxfGQ4GYK/aZPQiuFMGbaA==
+  version "1.4.170"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.170.tgz#0415fc489402e09bfbe1f0c99bbf4d73f31d48d4"
+  integrity sha512-rZ8PZLhK4ORPjFqLp9aqC4/S1j4qWFsPPz13xmWdrbBkU/LlxMcok+f+6f8YnQ57MiZwKtOaW15biZZsY5Igvw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -1048,9 +1048,9 @@ node-releases@^2.0.5:
   integrity sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==
 
 nwsapi@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.0.tgz#204879a9e3d068ff2a55139c2c772780681a38b7"
-  integrity sha512-h2AatdwYH+JHiZpv7pt/gSX1XoRGb7L/qSIeuqA6GwYoF9w1vP1cw42TO0aI2pNyshRK5893hNSl+1//vHK7hQ==
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.1.tgz#10a9f268fbf4c461249ebcfe38e359aa36e2577c"
+  integrity sha512-JYOWTeFoS0Z93587vRJgASD5Ut11fYl5NyihP3KrYBvMe1FRRs6RN7m20SA/16GM4P6hTnZjT+UmDOt38UeXNg==
 
 open@^7.4.2:
   version "7.4.2"
@@ -1086,6 +1086,11 @@ prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==
+
+prettier@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.7.1.tgz#e235806850d057f97bb08368a4f7d899f7760c64"
+  integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
 
 psl@^1.1.33:
   version "1.8.0"
