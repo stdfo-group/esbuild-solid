@@ -21,7 +21,7 @@ import Link from '@suid/material/Link'
 import Modal from '@suid/material/Modal'
 
 const theme = useTheme()
-const [open, setOpen] = createSignal(false)
+const [getOpen, setOpen] = createSignal(false)
 const handleOpen = () => setOpen(true)
 const handleClose = () => setOpen(false)
 
@@ -109,7 +109,7 @@ const App: Component = () => {
       <div>
         <Button onClick={handleOpen}>Open modal</Button>
         <Modal
-          open={open()}
+          open={getOpen()}
           onClose={handleClose}
           aria-labelledby='modal-modal-title'
           aria-describedby='modal-modal-description'
