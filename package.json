@@ -19,7 +19,6 @@
   "devDependencies": {
     "@typescript-eslint/parser": "^5.29.0",
     "esbuild": "^0.14.47",
-    "esbuild-plugin-compress": "^0.3.0",
     "esbuild-plugin-solid": "^0.4.2",
     "esbuild-visualizer": "^0.3.1",
     "eslint": "^8.18.0",

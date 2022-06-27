@@ -1,6 +1,6 @@
 import esbuild from 'esbuild'
 import { solidPlugin } from 'esbuild-plugin-solid'
-import { compress } from 'esbuild-plugin-compress'
+import { compress } from './compress.mjs'
 import fs from 'fs'
 import { exec } from 'child_process'
 
@@ -11,14 +11,7 @@ const config = {
   minify: true,
   logLevel: 'info',
   metafile: true,
-  write: false,
-  plugins: [
-    solidPlugin(),
-    compress({
-      gzip: true,
-      brotli: true,
-    }),
-  ],
+  plugins: [solidPlugin()],
 }
 
 fs.rmSync('./dist', { recursive: true, force: true })
@@ -26,6 +19,8 @@ fs.existsSync('./dist') || fs.mkdirSync('./dist')
 
 let result = await esbuild.build(config)
 fs.cpSync('./public/', './dist/', { recursive: true, force: true })
+
+compress()
 
 const statsDir = './dist/stats'
 fs.existsSync(statsDir) || fs.mkdirSync(statsDir)
