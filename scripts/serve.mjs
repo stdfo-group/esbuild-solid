@@ -53,5 +53,5 @@ http
   .listen(parseInt(port, 10))
 
 console.log(
-  `Static file server running at\n  => http://localhost: ${port}/\nCTRL + C to shutdown, CTRL + F5 for favicon`
+  `Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown, CTRL + F5 for favicon`
 )

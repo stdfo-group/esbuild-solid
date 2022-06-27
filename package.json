@@ -13,11 +13,10 @@
     "serve": "node ./scripts/serve.mjs",
     "dev": "esbuild index.js --outfile=dist_dev/app.js --bundle --sourcemap --watch",
     "dev:file": "node ./scripts/dev.mjs",
-    "dev:cli": "mkdir -p ./www && cp ./public/* ./www/* && esbuild --bundle ./src/index.tsx --outdir=./www --servedir=www && rm -rf ./www"
+    "dev:cli": "mkdir -p ./www && cp ./public/ ./www/ && esbuild --bundle ./src/index.tsx --outdir=./www --servedir=www && rm -rf ./www"
   },
   "license": "MIT",
   "devDependencies": {
-    "@craftamap/esbuild-plugin-html": "0.4.0",
     "@typescript-eslint/parser": "^5.29.0",
     "esbuild": "^0.14.47",
     "esbuild-plugin-compress": "^0.3.0",
