@@ -15,14 +15,12 @@ const writeBrotliCompress = (path, contents, options = {}) => {
 
 const logDelta = (sourcePath, compressedPath, type) => {
   const sourceSize = fs.statSync(sourcePath).size
-  const sourceSizeKb = roundOff(sourceSize * 0.001)
+  const sourceSizeKb = Math.round(sourceSize * 0.1) / 100
   const compressedSize = fs.statSync(compressedPath).size
-  const compressedSizekb = roundOff(compressedSize * 0.001)
+  const compressedSizekb = Math.round(compressedSize * 0.1) / 100
   const rate = ((compressedSize / sourceSize) * 100).toFixed(2)
   console.log(`${sourcePath}\t${type}\t${sourceSizeKb} -> ${compressedSizekb}\t${rate}%`)
 }
-
-const roundOff = value => Math.round(value * 100) / 100
 
 export const compress = (options = {}) => {
   const gzip = options.gzip ?? true
