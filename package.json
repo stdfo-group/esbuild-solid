@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "build": "yarn eslint && node ./scripts/build.mjs",
-    "clean": "rm -rf ./node_modules ./dist .yarn-error.log",
+    "clean": "rm -rf ./node_modules ./dist .yarn-error.log ./dist_dev",
     "clean:all": "yarn clean ./yarn.lock .vscode yarn-error.log .eslintcache",
     "eslint": "eslint ./src/**/* --cache",
     "eslint:fix": "yarn eslint --fix",
     "format": "yarn eslint:fix && yarn prettier:fix",
-    "prettier": "prettier --check --ignore-unknown .",
-    "prettier:fix": "prettier --write --list-different .",
+    "prettier": "prettier --check --ignore-unknown --cache .",
+    "prettier:fix": "prettier --write --list-different --cache .",
     "serve": "node ./scripts/serve.mjs",
     "dev": "esbuild index.js --outfile=dist_dev/app.js --bundle --sourcemap --watch",
     "dev:file": "node ./scripts/dev.mjs",
@@ -27,10 +27,11 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-solid": "^0.7.0",
     "prettier": "^2.7.1",
-    "typescript": "~4.4.3"
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "@suid/material": "0.4.3",
+    "solid-app-router": "0.4.1",
     "solid-icons": "0.4.13",
     "solid-js": "1.4.4"
   }
