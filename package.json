@@ -6,19 +6,18 @@
     "build": "yarn eslint && node ./scripts/build.mjs",
     "clean": "rm -rf ./node_modules ./dist .yarn-error.log ./dist_dev",
     "clean:all": "yarn clean ./yarn.lock .vscode yarn-error.log .eslintcache",
+    "dev": "node ./scripts/dev.mjs",
     "eslint": "eslint ./src/**/* --cache",
     "eslint:fix": "yarn eslint --fix",
     "format": "yarn eslint:fix && yarn prettier:fix",
     "prettier": "prettier --check --ignore-unknown --cache .",
     "prettier:fix": "prettier --write --list-different --cache .",
-    "serve": "node ./scripts/serve.mjs",
-    "dev": "esbuild index.js --outfile=dist_dev/app.js --bundle --sourcemap --watch",
-    "dev:file": "node ./scripts/dev.mjs",
-    "dev:cli": "mkdir -p ./www && cp ./public/ ./www/ && esbuild --bundle ./src/index.tsx --outdir=./www --servedir=www && rm -rf ./www"
+    "serve": "node ./scripts/serve.mjs"
   },
   "license": "MIT",
   "devDependencies": {
     "@typescript-eslint/parser": "^5.29.0",
+    "connect": "^3.7.0",
     "esbuild": "^0.14.47",
     "esbuild-plugin-solid": "^0.4.2",
     "esbuild-visualizer": "^0.3.1",
@@ -27,6 +26,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-solid": "^0.7.0",
     "prettier": "^2.7.1",
+    "serve-static": "^1.15.0",
     "typescript": "^4.7.4"
   },
   "dependencies": {
