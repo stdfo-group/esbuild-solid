@@ -6,6 +6,9 @@ import { exec } from 'child_process'
 
 const startTime = performance.now()
 
+// eslint-disable-next-line no-undef
+const instance = process
+
 const config = {
   entryPoints: ['./src/index.tsx'],
   bundle: true,
@@ -35,6 +38,9 @@ compress()
 const compressTime = performance.now()
 console.log(`Compress in ${(compressTime - staticTime).toFixed(3)} ms`)
 
+if (instance.argv.includes('analyze=false')) {
+  instance.exit(0)
+}
 const statsDir = './dist/stats'
 fs.existsSync(statsDir) || fs.mkdirSync(statsDir)
 fs.writeFileSync(`${statsDir}/meta.json`, JSON.stringify(result.metafile))
