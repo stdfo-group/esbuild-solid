@@ -4,6 +4,8 @@ import { compress } from './compress.mjs'
 import fs from 'fs'
 import { exec } from 'child_process'
 
+const startTime = performance.now()
+
 const config = {
   entryPoints: ['./src/index.tsx'],
   bundle: true,
@@ -17,10 +19,21 @@ const config = {
 fs.rmSync('./dist', { recursive: true, force: true })
 fs.existsSync('./dist') || fs.mkdirSync('./dist')
 
+const prepareTime = performance.now()
+console.log(`Prepare in ${(prepareTime - startTime).toFixed(3)} ms`)
+
 let result = await esbuild.build(config)
+
+const buildTime = performance.now()
+console.log(`Build in ${(buildTime - prepareTime).toFixed(3)} ms`)
+
 fs.cpSync('./public/', './dist/', { recursive: true, force: true })
+const staticTime = performance.now()
+console.log(`Copy static in ${(staticTime - buildTime).toFixed(3)} ms`)
 
 compress()
+const compressTime = performance.now()
+console.log(`Compress in ${(compressTime - staticTime).toFixed(3)} ms`)
 
 const statsDir = './dist/stats'
 fs.existsSync(statsDir) || fs.mkdirSync(statsDir)
@@ -31,6 +44,7 @@ exec(`esbuild-visualizer --metadata ${statsDir}/meta.json --filename ${statsDir}
     console.log(stderr)
     return
   }
-
-  console.log(`${stdout}`)
+  stdout && console.log(stdout)
+  const statsTime = performance.now()
+  console.log(`Stats in ${(statsTime - compressTime).toFixed(3)} ms`)
 })

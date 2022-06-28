@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "yarn eslint && node ./scripts/build.mjs",
-    "clean": "rm -rf ./node_modules ./dist ./yarn.lock .yarn-error.log .vscode yarn-error.log",
-    "eslint": "eslint ./src/**/*",
+    "clean": "rm -rf ./node_modules ./dist .yarn-error.log",
+    "clean:all": "yarn clean ./yarn.lock .vscode yarn-error.log .eslintcache",
+    "eslint": "eslint ./src/**/* --cache",
     "eslint:fix": "yarn eslint --fix",
     "format": "yarn eslint:fix && yarn prettier:fix",
     "prettier": "prettier --check --ignore-unknown .",
