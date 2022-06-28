@@ -2,14 +2,14 @@ import fs from 'fs'
 import { gzipSync, brotliCompressSync } from 'zlib'
 
 const writeGzipCompress = (path, contents, options = {}) => {
-  const gzipped = gzipSync(contents, options)
-  fs.writeFileSync(`${path}.gz`, gzipped)
+  const compressed = gzipSync(contents, options)
+  fs.writeFileSync(`${path}.gz`, compressed)
   logDelta(path, `${path}.gz`, 'gzip')
 }
 
 const writeBrotliCompress = (path, contents, options = {}) => {
-  const gzipped = brotliCompressSync(contents, options)
-  fs.writeFileSync(`${path}.br`, gzipped)
+  const compressed = brotliCompressSync(contents, options)
+  fs.writeFileSync(`${path}.br`, compressed)
   logDelta(path, `${path}.br`, 'brotli')
 }
 
@@ -24,13 +24,13 @@ const logDelta = (sourcePath, compressedPath, type) => {
 
 const roundOff = value => Math.round(value * 100) / 100
 
-const dirs = ['dist']
-
 export const compress = (options = {}) => {
   const gzip = options.gzip ?? true
   const brotli = options.brotli ?? true
   const gzipOpts = options.gzipOptions ?? {}
   const brotliOpts = options.brotliOptions ?? {}
+  const dirs = options.dirs ?? ['dist']
+
   if (brotli || gzip) {
     dirs.forEach(dir => {
       fs.readdirSync(dir).forEach(file => {
