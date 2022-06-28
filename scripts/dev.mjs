@@ -1,11 +1,11 @@
-import connect from 'connect'
-import serveStatic from 'serve-static'
+// eslint-disable-next-line no-redeclare
 import crypto from 'crypto'
 import esbuild from 'esbuild'
 import { promises as fs } from 'fs'
 import { createServer } from 'http'
 import path from 'path'
 import { solidPlugin } from 'esbuild-plugin-solid'
+import url from 'url'
 
 const env = 'dev'
 const config = {
@@ -20,6 +20,13 @@ const config = {
     output: 'dist_dev',
     html: './public/index.html',
   },
+}
+
+const contentTypesByExtension = {
+  '.html': 'text/html',
+  '.css': 'text/css',
+  '.js': 'application/javascript',
+  '.ico': 'image/x-icon',
 }
 
 let builder
@@ -74,8 +81,6 @@ async function watch() {
                 console.debug('Reloading client', key)
 
                 client.write(`id: ${Date.now()}\nevent: reload\ndata: ${changedFiles.join(',')}\n\n`)
-
-                // client.flush()
               }
             } else {
               for (const [key, client] of Object.entries(clients)) {
@@ -84,8 +89,6 @@ async function watch() {
                 for (const changedFile of changedFiles) {
                   client.write(`id: ${Date.now()}\nevent: stylesheet\ndata: ${changedFile}\n\n`)
                 }
-
-                // client.flush()
               }
             }
           }
@@ -94,96 +97,107 @@ async function watch() {
     },
   })
 }
+// eslint-disable-next-line no-undef
+const htmlPath = path.resolve(process.cwd(), config.fileConfig.html)
 
-async function dev() {
-  if (config.fileConfig === null) {
-    return
-  }
-
-  if (typeof config.fileConfig.html === 'undefined') {
-    console.end('Cannot use esbuild in renderer without specifying a html file in `rendererConfig.html`')
-  }
-
-  const htmlPath = path.resolve(process.cwd(), config.fileConfig.html)
-
-  const html = (await fs.readFile(htmlPath)).toString().replace(
-    '</body>',
-    `<script>
+const html = (await fs.readFile(htmlPath)).toString().replace(
+  '</body>',
+  `<script>
                 const sse = new EventSource("/sse");
                 sse.addEventListener('reload', () => window.location.reload())
                 sse.addEventListener('stylesheet', (e) => document.querySelector(\`link[href^="\${e.data}"]\`).href = \`\${e.data}?${Date.now()}\`)
               </script></body>`
-  )
+)
 
-  const handler = connect()
+const server = createServer()
+// sse
+server.on('request', (req, res) => {
+  if (req.url === '/sse') {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    })
 
-  let publicPath = ''
+    const key = crypto.randomBytes(8).toString('hex')
 
-  if (config.config.outdir !== undefined && config.config.outfile === undefined) {
-    publicPath = config.config.outdir
-  } else if (config.config.outdir === undefined && config.config.outfile !== undefined) {
-    publicPath = path.dirname(config.config.outfile)
-  } else {
-    console.end('Missing outdir/outfile in esbuild configuration. This is maybe an error from electron-esbuild.')
+    console.debug('Client connected', key)
+
+    clients[key] = res
+
+    req.on('close', () => {
+      console.debug('Client disconnected', key)
+
+      delete clients[key]
+    })
+  }
+})
+// html
+server.on('request', (req, res) => {
+  if (req.url === '/' || req.url === '') {
+    res.setHeader('Content-Type', 'text/html')
+    res.setHeader('access-control-allow-origin', '*')
+    res.writeHead(200)
+    res.end(html)
+  }
+})
+// ico, js, css
+server.on('request', (req, res) => {
+  if (req.url.endsWith('.js') || req.url.endsWith('.ico') || req.url.endsWith('.css')) {
+    const uri = url.parse(req.url).pathname
+    // eslint-disable-next-line no-undef
+    const filename = path.join(process.cwd(), config.config.outdir, uri)
+    let headers = { 'access-control-allow-origin': '*' }
+
+    const contentType = contentTypesByExtension[path.extname(filename)]
+    if (contentType) {
+      headers['Content-Type'] = contentType
+    }
+    console.log(filename)
+    fs.readFile(filename)
+      .then(contents => {
+        res.writeHead(200, headers)
+        res.write(contents, 'binary')
+        res.end()
+      })
+      .catch(err => {
+        if (err) {
+          if (err.code === 'ENOENT') {
+            res.writeHead(404, { 'Content-Type': 'text/plain' })
+            res.write('404 Not Found\n')
+            res.end()
+            return
+          }
+          res.writeHead(500, { 'Content-Type': 'text/plain' })
+          res.write(err + '\n')
+          res.end()
+          return
+        }
+      })
+  }
+})
+
+const keepAliveInterval = setInterval(() => {
+  for (const [key, client] of Object.entries(clients)) {
+    console.debug('Pinging client', key)
+
+    client.write(`:\n\n`)
+  }
+}, 10000)
+// eslint-disable-next-line no-undef
+process.on('exit', async () => {
+  clearInterval(keepAliveInterval)
+
+  for (const [key, client] of Object.entries(clients)) {
+    console.debug('Ending client', key)
+
+    client.end()
   }
 
-  handler.use(serveStatic(publicPath, { index: false }))
-  handler.use((req, res) => {
-    if (req.url === '/' || req.url === '') {
-      res.setHeader('Content-Type', 'text/html')
-      res.setHeader('access-control-allow-origin', '*')
-      // res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
-      // res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
-      res.writeHead(200)
-      res.end(html)
-    } else if (req.url === '/sse') {
-      res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      })
+  server.close()
+  builder?.stop?.()
+})
 
-      const key = crypto.randomBytes(8).toString('hex')
+server.listen(9080)
 
-      console.debug('Client connected', key)
-
-      clients[key] = res
-
-      req.on('close', () => {
-        console.debug('Client disconnected', key)
-
-        delete clients[key]
-      })
-    }
-  })
-
-  const server = createServer(handler)
-
-  const keepAliveInterval = setInterval(() => {
-    for (const [key, client] of Object.entries(clients)) {
-      console.debug('Pinging client', key)
-
-      client.write(`:\n\n`)
-      // client.flush()
-    }
-  }, 10000)
-
-  process.on('exit', async () => {
-    clearInterval(keepAliveInterval)
-
-    for (const [key, client] of Object.entries(clients)) {
-      console.debug('Ending client', key)
-
-      client.end()
-    }
-
-    server.close()
-    builder?.stop?.()
-  })
-
-  server.listen(9080)
-
-  watch()
-}
-
-dev()
+watch()
