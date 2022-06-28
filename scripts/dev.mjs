@@ -7,8 +7,11 @@ import path from 'path'
 import { solidPlugin } from 'esbuild-plugin-solid'
 import url from 'url'
 
+// eslint-disable-next-line no-undef
+const proc = process
 const env = 'dev'
 const config = {
+  port: 3000,
   config: {
     entryPoints: ['./src/index.tsx'],
     outdir: './dist_dev',
@@ -97,8 +100,8 @@ async function watch() {
     },
   })
 }
-// eslint-disable-next-line no-undef
-const htmlPath = path.resolve(process.cwd(), config.fileConfig.html)
+
+const htmlPath = path.resolve(proc.cwd(), config.fileConfig.html)
 
 const html = (await fs.readFile(htmlPath)).toString().replace(
   '</body>',
@@ -145,8 +148,8 @@ server.on('request', (req, res) => {
 server.on('request', (req, res) => {
   if (req.url.endsWith('.js') || req.url.endsWith('.ico') || req.url.endsWith('.css')) {
     const uri = url.parse(req.url).pathname
-    // eslint-disable-next-line no-undef
-    const filename = path.join(process.cwd(), config.config.outdir, uri)
+
+    const filename = path.join(proc.cwd(), config.config.outdir, uri)
     let headers = { 'access-control-allow-origin': '*' }
 
     const contentType = contentTypesByExtension[path.extname(filename)]
@@ -184,8 +187,8 @@ const keepAliveInterval = setInterval(() => {
     client.write(`:\n\n`)
   }
 }, 10000)
-// eslint-disable-next-line no-undef
-process.on('exit', async () => {
+
+const onExit = _signal => {
   clearInterval(keepAliveInterval)
 
   for (const [key, client] of Object.entries(clients)) {
@@ -194,10 +197,23 @@ process.on('exit', async () => {
     client.end()
   }
 
-  server.close()
   builder?.stop?.()
+
+  server.close()
+  fs.rm(config.config.outdir, { recursive: true, force: true }).then(() => {
+    console.log('Bye!')
+    proc.exit()
+  })
+}
+
+proc.on('SIGINT', onExit)
+proc.on('SIGTERM', onExit)
+proc.on('exit', onExit)
+
+fs.cp('./public/', config.fileConfig.output, { recursive: true, force: true, dereference: true }).then(_value => {
+  server.listen(config.port, () => {
+    console.log(`=> http://localhost:${config.port}/ \nCTRL + C to shutdown`)
+  })
+
+  watch()
 })
-
-server.listen(9080)
-
-watch()
