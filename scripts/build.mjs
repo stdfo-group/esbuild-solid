@@ -7,7 +7,7 @@ import { perf, perfAsync } from './utils.mjs'
 
 const outdir = './dist'
 const config = {
-  entryPoints: ['./src/index.tsx'],
+  entryPoints: ['./src/index.jsx'],
   bundle: true,
   outdir: outdir,
   minify: true,
