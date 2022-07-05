@@ -4,7 +4,7 @@ import path from 'path'
 import fs from 'fs'
 
 // eslint-disable-next-line no-undef
-const serveDir = process.argv[2] || 'dist'
+const serveDir = process.argv[2] || './dist'
 // eslint-disable-next-line no-undef
 const port = process.argv[3] || 8000
 
@@ -44,8 +44,7 @@ function getEncoding(req) {
 function handler(request, response) {
   const uri = url.parse(request.url).pathname
   console.log(`${request.method} ${uri}`)
-  // eslint-disable-next-line no-undef
-  let filename = path.join(process.cwd(), serveDir, uri)
+  let filename = path.join(serveDir, uri)
 
   if (!fs.existsSync(filename)) {
     response.writeHead(404, { 'Content-Type': 'text/plain' })
@@ -58,7 +57,7 @@ function handler(request, response) {
     filename += '/index.html'
   }
 
-  var headers = { 'access-control-allow-origin': '*' }
+  let headers = { 'access-control-allow-origin': '*' }
 
   const contentType = contentTypesByExtension[path.extname(filename)]
   if (contentType) {
@@ -67,7 +66,7 @@ function handler(request, response) {
 
   const encoding = getEncoding(request)
   if (encoding != null) {
-    var tmpFilename = filename + endocdingToExtension[encoding]
+    let tmpFilename = filename + endocdingToExtension[encoding]
     if (fs.existsSync(tmpFilename)) {
       filename += endocdingToExtension[encoding]
       response.setHeader('Content-Encoding', encoding)
