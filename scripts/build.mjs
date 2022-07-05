@@ -16,17 +16,17 @@ const config = {
   plugins: [solidPlugin()],
 }
 
-perf('prepare', () => {
+perf('init', () => {
   fs.rmSync(outdir, { recursive: true, force: true })
-  fs.existsSync(outdir) || fs.mkdirSync(outdir)
+  fs.cpSync('./public/', outdir, { recursive: true, force: true })
 })
 
 let result = await perfAsync('build', esbuild.build, config)
-
-perf('static', () => fs.cpSync('./public/', outdir, { recursive: true, force: true }))
 perf('compress', compress)
 
 await perfAsync('stats', async () => {
   const fileContent = await stats.visualizer(result.metafile)
-  fs.writeFileSync(`${outdir}/stats.html`, fileContent)
+  fs.mkdirSync(`${outdir}/stats`)
+  fs.writeFileSync(`${outdir}/stats/stats.json`, JSON.stringify(result.metafile))
+  fs.writeFileSync(`${outdir}/stats/stats.html`, fileContent)
 })
