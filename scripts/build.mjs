@@ -1,56 +1,32 @@
 import esbuild from 'esbuild'
 import { solidPlugin } from 'esbuild-plugin-solid'
-import { compress } from './compress.mjs'
+import compress from './compress.mjs'
 import fs from 'fs'
-import { exec } from 'child_process'
+import stats from 'esbuild-visualizer/dist/plugin/index.js'
+import { perf, perfAsync } from './utils.mjs'
 
-const startTime = performance.now()
-
-// eslint-disable-next-line no-undef
-const instance = process
-
+const outdir = './dist'
 const config = {
   entryPoints: ['./src/index.tsx'],
   bundle: true,
-  outdir: './dist',
+  outdir: outdir,
   minify: true,
   logLevel: 'info',
   metafile: true,
   plugins: [solidPlugin()],
 }
 
-fs.rmSync('./dist', { recursive: true, force: true })
-fs.existsSync('./dist') || fs.mkdirSync('./dist')
+perf('prepare', () => {
+  fs.rmSync(outdir, { recursive: true, force: true })
+  fs.existsSync(outdir) || fs.mkdirSync(outdir)
+})
 
-const prepareTime = performance.now()
-console.log(`Prepare in ${(prepareTime - startTime).toFixed(3)} ms`)
+let result = await perfAsync('build', esbuild.build, config)
 
-let result = await esbuild.build(config)
+perf('static', () => fs.cpSync('./public/', outdir, { recursive: true, force: true }))
+perf('compress', compress)
 
-const buildTime = performance.now()
-console.log(`Build in ${(buildTime - prepareTime).toFixed(3)} ms`)
-
-fs.cpSync('./public/', './dist/', { recursive: true, force: true })
-const staticTime = performance.now()
-console.log(`Copy static in ${(staticTime - buildTime).toFixed(3)} ms`)
-
-compress()
-const compressTime = performance.now()
-console.log(`Compress in ${(compressTime - staticTime).toFixed(3)} ms`)
-
-if (instance.argv.includes('analyze=false')) {
-  instance.exit(0)
-}
-const statsDir = './dist/stats'
-fs.existsSync(statsDir) || fs.mkdirSync(statsDir)
-fs.writeFileSync(`${statsDir}/meta.json`, JSON.stringify(result.metafile))
-exec(`esbuild-visualizer --metadata ${statsDir}/meta.json --filename ${statsDir}/stats.html`, (err, stdout, stderr) => {
-  if (err) {
-    console.error(`esbuild-visualizer error: ${err}`)
-    console.log(stderr)
-    return
-  }
-  stdout && console.log(stdout)
-  const statsTime = performance.now()
-  console.log(`Stats in ${(statsTime - compressTime).toFixed(3)} ms`)
+await perfAsync('stats', async () => {
+  const fileContent = await stats.visualizer(result.metafile)
+  fs.writeFileSync(`${outdir}/stats.html`, fileContent)
 })

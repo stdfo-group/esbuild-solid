@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "yarn eslint && node ./scripts/build.mjs",
-    "build:prod": "node ./scripts/build.mjs analyze=false",
+    "build": "yarn eslint && yarn build:prod",
+    "build:prod": "node ./scripts/build.mjs",
     "clean": "rm -rf ./node_modules ./dist .yarn-error.log ./dist_dev",
     "clean:all": "yarn clean ./yarn.lock .vscode yarn-error.log .eslintcache",
     "dev": "node ./scripts/dev.mjs",
