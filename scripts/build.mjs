@@ -1,9 +1,9 @@
-import esbuild from 'esbuild'
+import { build } from 'esbuild'
 import { solidPlugin } from './solid.mjs'
-import compress from './compress.mjs'
+import { compress } from './compress.mjs'
 import fs from 'fs'
 import stats from 'esbuild-visualizer/dist/plugin/index.js'
-import { perf, perfAsync } from './utils.mjs'
+import { perfAsync } from './utils.mjs'
 
 const outdir = './dist'
 const config = {
@@ -16,17 +16,30 @@ const config = {
   plugins: [solidPlugin()],
 }
 
-perf('init', () => {
-  fs.rmSync(outdir, { recursive: true, force: true })
-  fs.cpSync('./public/', outdir, { recursive: true, force: true })
-})
+const init = () =>
+  new Promise(resolve => {
+    fs.rmSync(outdir, { recursive: true, force: true })
+    fs.cpSync('./public/', outdir, { recursive: true, force: true })
 
-let result = await perfAsync('build', esbuild.build, config)
-perf('compress', compress)
+    resolve()
+  })
 
-await perfAsync('stats', async () => {
+const writeStats = async result => {
   const fileContent = await stats.visualizer(result.metafile)
+
   fs.mkdirSync(`${outdir}/stats`)
   fs.writeFileSync(`${outdir}/stats/stats.json`, JSON.stringify(result.metafile))
   fs.writeFileSync(`${outdir}/stats/stats.html`, fileContent)
-})
+}
+
+let lastResult = null
+const buildSteps = [
+  [undefined, init],
+  [undefined, build, config],
+  [undefined, writeStats],
+  [undefined, compress],
+]
+
+for (const stepParams of buildSteps) {
+  lastResult = await perfAsync(...stepParams, lastResult)
+}
