@@ -4,7 +4,7 @@ import esbuild from 'esbuild'
 import { promises as fs } from 'fs'
 import { createServer } from 'http'
 import path from 'path'
-import { solidPlugin } from 'esbuild-plugin-solid'
+import { solidPlugin } from './solid.mjs'
 import url from 'url'
 
 // eslint-disable-next-line no-undef
