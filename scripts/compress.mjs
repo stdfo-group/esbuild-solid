@@ -26,11 +26,12 @@ const logDelta = (sourcePath, compressedPath, type) => {
 
 export function compress(options = {}) {
   return new Promise((resolve, reject) => {
+    const minSize = options.minSize ?? 4096
     const dirs = options.dirs ?? ['dist']
     const gzip = options.gzip ?? true
     const brotli = options.brotli ?? true
     const gzipOpts = options.gzipOptions ?? {
-      level: 9,
+      level: zlib.constants.Z_BEST_COMPRESSION,
     }
 
     const brotliOpts = options.brotliOptions ?? {
@@ -43,16 +44,18 @@ export function compress(options = {}) {
     if (brotli || gzip) {
       dirs.forEach(dir => {
         fs.readdirSync(dir)
-          // TODO: html?
           .filter(i => i.endsWith('.js') || i.endsWith('.css') || i.endsWith('.html'))
           .forEach(file => {
-            perf('  ' + file, () => {
-              const filename = path.join(dir, file)
-              const content = fs.readFileSync(filename)
+            const filename = path.join(dir, file)
+            const stat = fs.statSync(filename)
+            if (stat.size >= minSize) {
+              perf('  ' + file, () => {
+                const content = fs.readFileSync(filename)
 
-              brotli && writeBrotliCompress(filename, content, brotliOpts)
-              gzip && writeGzipCompress(filename, content, gzipOpts)
-            })
+                brotli && writeBrotliCompress(filename, content, brotliOpts)
+                gzip && writeGzipCompress(filename, content, gzipOpts)
+              })
+            }
           })
       })
 
