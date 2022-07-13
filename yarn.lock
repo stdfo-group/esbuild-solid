@@ -561,7 +561,7 @@ babel-plugin-jsx-dom-expressions@^0.33.12:
     "@babel/types" "^7.16.0"
     html-entities "2.3.2"
 
-babel-preset-solid@^1.2.6:
+babel-preset-solid@1.4.6:
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/babel-preset-solid/-/babel-preset-solid-1.4.6.tgz#c9e8ab2a90d03cc7532c130bb5c9890100da5c70"
   integrity sha512-5n+nm1zgj7BK9cv0kYu0p+kbsXgGbrxLmA5bv5WT0V5WnqRgshWILInPWLJNZbvP5gBj+huDKwk3J4RhhbFlhA==
@@ -732,9 +732,9 @@ doctrine@^3.0.0:
     esutils "^2.0.2"
 
 electron-to-chromium@^1.4.172:
-  version "1.4.186"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.186.tgz#a811bba15f0868d3f4164b0f4ede8adc8773831b"
-  integrity sha512-YoVeFrGd/7ROjz4R9uPoND1K/hSRC/xADy9639ZmIZeJSaBnKdYx3I6LMPsY7CXLpK7JFgKQVzeZ/dk2br6Eaw==
+  version "1.4.187"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.187.tgz#b884493df00816dc2ce928958c4f6a51a93fe1a8"
+  integrity sha512-t3iFLHVIMhB8jGZ+8ui951nz6Bna5qKfhxezG3wzXdBJ79qFKPsE2chjjVFNqC1ewhfrPQrw9pmVeo4FFpZeQA==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -858,15 +858,6 @@ esbuild-openbsd-64@0.14.49:
   version "0.14.49"
   resolved "https://registry.yarnpkg.com/esbuild-openbsd-64/-/esbuild-openbsd-64-0.14.49.tgz#1f8bdc49f8a44396e73950a3fb6b39828563631d"
   integrity sha512-lP06UQeLDGmVPw9Rg437Btu6J9/BmyhdoefnQ4gDEJTtJvKtQaUcOQrhjTq455ouZN4EHFH1h28WOJVANK41kA==
-
-esbuild-plugin-solid@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/esbuild-plugin-solid/-/esbuild-plugin-solid-0.4.2.tgz#747942408e218b15e424e3ba344d0626a05685bb"
-  integrity sha512-T5GphLoud3RumjeNYO3K9WVjWDzVKG5evlS7hUEUI0n9tiCL+CnbvJh3SSwFi3xeeXpZRrnZc1gd6FWQsVobTg==
-  dependencies:
-    "@babel/core" "^7.16.5"
-    "@babel/preset-typescript" "^7.16.5"
-    babel-preset-solid "^1.2.6"
 
 esbuild-sunos-64@0.14.49:
   version "0.14.49"

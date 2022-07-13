@@ -17,9 +17,11 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/preset-typescript": "^7.16.5",
     "@typescript-eslint/parser": "^5.29.0",
+    "babel-preset-solid": "1.4.6",
     "esbuild": "^0.14.47",
-    "esbuild-plugin-solid": "^0.4.2",
     "esbuild-visualizer": "^0.3.1",
     "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",

@@ -1,5 +1,5 @@
 import esbuild from 'esbuild'
-import { solidPlugin } from 'esbuild-plugin-solid'
+import { solidPlugin } from './solid.mjs'
 import compress from './compress.mjs'
 import fs from 'fs'
 import stats from 'esbuild-visualizer/dist/plugin/index.js'
