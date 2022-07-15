@@ -45,17 +45,16 @@ export function compress(options = {}) {
       dirs.forEach(dir => {
         fs.readdirSync(dir)
           .filter(i => i.endsWith('.js') || i.endsWith('.css') || i.endsWith('.html'))
+          .filter(i => fs.statSync(path.join(dir, i)).size > minSize)
           .forEach(file => {
             const filename = path.join(dir, file)
-            const stat = fs.statSync(filename)
-            if (stat.size >= minSize) {
-              perf('  ' + file, () => {
-                const content = fs.readFileSync(filename)
 
-                brotli && writeBrotliCompress(filename, content, brotliOpts)
-                gzip && writeGzipCompress(filename, content, gzipOpts)
-              })
-            }
+            perf('  ' + file, () => {
+              const content = fs.readFileSync(filename)
+
+              brotli && writeBrotliCompress(filename, content, brotliOpts)
+              gzip && writeGzipCompress(filename, content, gzipOpts)
+            })
           })
       })
 
