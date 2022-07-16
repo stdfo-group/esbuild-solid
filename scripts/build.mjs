@@ -27,9 +27,9 @@ const init = () =>
 const writeStats = async result => {
   const fileContent = await stats.visualizer(result.metafile)
 
-  fs.mkdirSync(`${outdir}/stats`)
-  fs.writeFileSync(`${outdir}/stats/stats.json`, JSON.stringify(result.metafile))
-  fs.writeFileSync(`${outdir}/stats/stats.html`, fileContent)
+  fs.mkdirSync(`./stats`)
+  fs.writeFileSync(`./stats/stats.json`, JSON.stringify(result.metafile))
+  fs.writeFileSync(`./stats/stats.html`, fileContent)
 }
 
 let lastResult = null
