@@ -5,7 +5,7 @@
   "scripts": {
     "build": "yarn eslint && yarn build:prod",
     "build:prod": "node ./scripts/build.mjs",
-    "clean": "rm -rf ./node_modules ./dist .yarn-error.log ./dist_dev",
+    "clean": "rm -rf ./node_modules ./dist .yarn-error.log ./dist_dev ./stats",
     "clean:all": "yarn clean ./yarn.lock .vscode yarn-error.log .eslintcache",
     "dev": "node ./scripts/dev.mjs",
     "eslint": "eslint ./src/**/* --cache",
