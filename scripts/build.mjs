@@ -6,6 +6,7 @@ import stats from 'esbuild-visualizer/dist/plugin/index.js'
 import { perfAsync } from './utils.mjs'
 
 const outdir = './dist'
+const statsdir = './stats'
 const config = {
   entryPoints: ['./src/index.tsx'],
   bundle: true,
@@ -19,6 +20,7 @@ const config = {
 const init = () =>
   new Promise(resolve => {
     fs.rmSync(outdir, { recursive: true, force: true })
+    fs.rmSync(statsdir, { recursive: true, force: true })
     fs.cpSync('./public/', outdir, { recursive: true, force: true })
 
     resolve()
@@ -27,9 +29,9 @@ const init = () =>
 const writeStats = async result => {
   const fileContent = await stats.visualizer(result.metafile)
 
-  fs.mkdirSync(`./stats`)
-  fs.writeFileSync(`./stats/stats.json`, JSON.stringify(result.metafile))
-  fs.writeFileSync(`./stats/stats.html`, fileContent)
+  fs.mkdirSync(statsdir)
+  fs.writeFileSync(`${statsdir}/stats.json`, JSON.stringify(result.metafile))
+  fs.writeFileSync(`${statsdir}/stats.html`, fileContent)
 }
 
 let lastResult = null
