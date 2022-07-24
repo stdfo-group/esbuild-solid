@@ -20,22 +20,37 @@ const endocdingToExtension = {
   br: '.br',
 }
 
-function getEncoding(req) {
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value)
+}
+
+function preloadContentEncodings() {
+  // TODO: replace via generator
+  let result = { gzip: [], br: [] }
+  const extensions = Object.values(endocdingToExtension)
+
+  fs.readdirSync(serveDir).forEach(file => {
+    extensions.forEach(element => {
+      const key = getKeyByValue(endocdingToExtension, element)
+      if (file.endsWith(element)) {
+        result[key] = [...result[key], serveDir.slice(2) + '/' + file.replace('.br', '').replace('.gz', '')]
+      }
+    })
+  })
+  return result
+}
+
+function getEncodings(req) {
   const headers = req.headers
-  let encodingType = null
+  let encodingType = []
   if (headers && headers['accept-encoding']) {
     const requestEncodings = headers['accept-encoding'].split(',').map(el => el.trim())
 
     if (requestEncodings.includes('br')) {
-      encodingType = 'br'
-    } else {
-      if (
-        requestEncodings.includes('gzip') ||
-        requestEncodings.includes('compress') ||
-        requestEncodings.includes('*')
-      ) {
-        encodingType = 'gzip'
-      }
+      encodingType.push('br')
+    }
+    if (requestEncodings.includes('gzip') || requestEncodings.includes('compress') || requestEncodings.includes('*')) {
+      encodingType.push('gzip')
     }
   }
   return encodingType
@@ -54,7 +69,7 @@ function handler(request, response) {
   }
 
   if (fs.statSync(filename).isDirectory()) {
-    filename += '/index.html'
+    filename += 'index.html'
   }
 
   let headers = { 'access-control-allow-origin': '*' }
@@ -64,12 +79,18 @@ function handler(request, response) {
     headers['Content-Type'] = contentType
   }
 
-  const encoding = getEncoding(request)
-  if (encoding != null) {
-    let tmpFilename = filename + endocdingToExtension[encoding]
-    if (fs.existsSync(tmpFilename)) {
-      filename += endocdingToExtension[encoding]
-      response.setHeader('Content-Encoding', encoding)
+  const encodings = getEncodings(request)
+  if (encodings != []) {
+    for (let i = 0; i < encodings.length; i++) {
+      const curEncoding = encodings[i]
+      if (contents[curEncoding].find(i => i === filename)) {
+        const tmpFilename = filename + endocdingToExtension[curEncoding]
+        if (fs.existsSync(tmpFilename)) {
+          filename = tmpFilename
+          response.setHeader('Content-Encoding', curEncoding)
+        }
+        break
+      }
     }
   }
 
@@ -87,6 +108,8 @@ function handler(request, response) {
     response.end()
   })
 }
+
+const contents = preloadContentEncodings()
 
 http.createServer(handler).listen(parseInt(port, 10))
 
