@@ -57,8 +57,8 @@ function getEncodings(req) {
 }
 
 function handler(request, response) {
+  const startTime = performance.now()
   const uri = url.parse(request.url).pathname
-  console.log(`${request.method} ${uri}`)
   let filename = path.join(serveDir, uri)
 
   if (!fs.existsSync(filename)) {
@@ -94,7 +94,6 @@ function handler(request, response) {
     }
   }
 
-  console.log(filename)
   fs.readFile(filename, 'binary', function (err, file) {
     if (err) {
       response.writeHead(500, { 'Content-Type': 'text/plain' })
@@ -106,6 +105,8 @@ function handler(request, response) {
     response.writeHead(200, headers)
     response.write(file, 'binary')
     response.end()
+    const endTime = (performance.now() - startTime).toFixed(3)
+    console.log(`${request.method} ${uri} --- ${filename} --- ${endTime} ms`)
   })
 }
 
