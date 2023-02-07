@@ -2,7 +2,7 @@
   "parser": "@typescript-eslint/parser",
   "plugins": ["solid", "prettier"],
   "extends": ["eslint:recommended", "plugin:solid/typescript", "plugin:prettier/recommended"],
-  "ignorePatterns": ["./dist/**/*"],
+  "ignorePatterns": ["dist/", "stats/", "dist_dev/"],
   "rules": {
     "prettier/prettier": ["error"],
     "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]

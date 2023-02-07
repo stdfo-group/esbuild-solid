@@ -1,12 +1,14 @@
-import http from 'http'
-import url from 'url'
-import path from 'path'
-import fs from 'fs'
+import http from 'node:http'
+import url from 'node:url'
+import path from 'node:path'
+import fs from 'node:fs'
+import { readdirSync } from './utils.mjs'
+import { outdir, serveport } from '../config.mjs'
 
 // eslint-disable-next-line no-undef
-const serveDir = process.argv[2] || './dist'
+const serveDir = process.argv[2] || outdir
 // eslint-disable-next-line no-undef
-const port = process.argv[3] || 8000
+const port = process.argv[3] || serveport
 
 const contentTypesByExtension = {
   '.html': 'text/html',
@@ -29,11 +31,11 @@ function preloadContentEncodings() {
   let result = { gzip: [], br: [] }
   const extensions = Object.values(endocdingToExtension)
 
-  fs.readdirSync(serveDir).forEach(file => {
+  readdirSync(serveDir).forEach(file => {
     extensions.forEach(element => {
       const key = getKeyByValue(endocdingToExtension, element)
       if (file.endsWith(element)) {
-        result[key] = [...result[key], serveDir.slice(2) + '/' + file.replace('.br', '').replace('.gz', '')]
+        result[key] = [...result[key], file.replace('.br', '').replace('.gz', '')]
       }
     })
   })

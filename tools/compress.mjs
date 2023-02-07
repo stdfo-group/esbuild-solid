@@ -1,7 +1,7 @@
 import fs from 'fs'
-import path from 'path'
 import zlib, { gzipSync, brotliCompressSync } from 'zlib'
-import { perf } from './utils.mjs'
+import { perf, readdirSync } from './utils.mjs'
+import { outdir } from '../config.mjs'
 
 const writeGzipCompress = (path, contents, options = {}) => {
   const filename = `${path}.gz`
@@ -27,7 +27,7 @@ const logDelta = (sourcePath, compressedPath, type) => {
 export function compress(options = {}) {
   return new Promise((resolve, reject) => {
     const minSize = options.minSize ?? 4096
-    const dirs = options.dirs ?? ['dist']
+    const dirs = options.dirs ?? [outdir]
     const gzip = options.gzip ?? true
     const brotli = options.brotli ?? true
     const gzipOpts = options.gzipOptions ?? {
@@ -43,17 +43,15 @@ export function compress(options = {}) {
 
     if (brotli || gzip) {
       dirs.forEach(dir => {
-        fs.readdirSync(dir)
+        readdirSync(dir)
           .filter(i => i.endsWith('.js') || i.endsWith('.css') || i.endsWith('.html'))
-          .filter(i => fs.statSync(path.join(dir, i)).size > minSize)
+          .filter(i => fs.statSync(i).size > minSize)
           .forEach(file => {
-            const filename = path.join(dir, file)
-
             perf('  ' + file, () => {
-              const content = fs.readFileSync(filename)
+              const content = fs.readFileSync(file)
 
-              brotli && writeBrotliCompress(filename, content, brotliOpts)
-              gzip && writeGzipCompress(filename, content, gzipOpts)
+              brotli && writeBrotliCompress(file, content, brotliOpts)
+              gzip && writeGzipCompress(file, content, gzipOpts)
             })
           })
       })

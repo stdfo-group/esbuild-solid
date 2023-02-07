@@ -1,30 +1,14 @@
 import { build } from 'esbuild'
-import { solidPlugin } from './solid.mjs'
-import { compress } from './compress.mjs'
-import fs from 'fs'
 import stats from 'esbuild-visualizer/dist/plugin/index.js'
+import fs from 'node:fs'
+import { outdir, prodconf, statsdir } from '../config.mjs'
+import { compress } from './compress.mjs'
 import { perfAsync } from './utils.mjs'
 
-const outdir = './dist'
-const statsdir = './stats'
-const config = {
-  entryPoints: ['./src/index.tsx'],
-  bundle: true,
-  outdir: outdir,
-  minify: true,
-  logLevel: 'info',
-  metafile: true,
-  plugins: [solidPlugin()],
+const init = async () => {
+  await fs.promises.rm(outdir, { recursive: true, force: true })
+  await fs.promises.rm(statsdir, { recursive: true, force: true })
 }
-
-const init = () =>
-  new Promise(resolve => {
-    fs.rmSync(outdir, { recursive: true, force: true })
-    fs.rmSync(statsdir, { recursive: true, force: true })
-    fs.cpSync('./public/', outdir, { recursive: true, force: true })
-
-    resolve()
-  })
 
 const writeStats = async result => {
   const fileContent = await stats.visualizer(result.metafile)
@@ -37,7 +21,7 @@ const writeStats = async result => {
 let lastResult = null
 const buildSteps = [
   [undefined, init],
-  [undefined, build, config],
+  [undefined, build, prodconf],
   [undefined, writeStats],
   [undefined, compress],
 ]

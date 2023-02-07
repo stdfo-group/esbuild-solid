@@ -1,5 +1,7 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 const prepare = (meta, func, ..._opts) => {
-  // console.log(meta.label, func)
   if (meta.label === undefined) {
     meta.label = func.name + '_' + (Date.now() % 100000)
   }
@@ -30,3 +32,8 @@ export const perfAsync = async (label, func, ...opts) => {
 }
 
 export const perfMs = label => performance.getEntriesByName(label)[0].duration.toFixed(3)
+
+export const readdirSync = (p, a = []) => {
+  if (fs.statSync(p).isDirectory()) fs.readdirSync(p).map(f => readdirSync(a[a.push(path.join(p, f)) - 1], a))
+  return a
+}
