@@ -26,7 +26,7 @@
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-solid": "0.9.4",
-    "prettier": "2.8.3",
+    "prettier": "2.8.4",
     "typescript": "npm:@kidonng/typescript"
   },
   "dependencies": {

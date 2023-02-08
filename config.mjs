@@ -1,4 +1,4 @@
-import { solidPlugin } from './tools/solid.mjs'
+import { solidPlugin, statsPlugin } from './tools/esbuild_plugins.mjs'
 
 export const outdir = './dist'
 export const serveport = 3000
@@ -31,9 +31,8 @@ export const devconf = {
 export const prodconf = {
   ...baseconf,
   outdir: outdir,
-  bundle: true,
   minify: true,
   logLevel: 'info',
   metafile: true,
-  treeShaking: true,
+  plugins: [...baseconf.plugins, statsPlugin(statsdir)],
 }
