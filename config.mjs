@@ -2,24 +2,30 @@ import devPlugin from './tools/plugins/dev.mjs'
 import statsPlugin from './tools/plugins/stats.mjs'
 import compressPlugin from './tools/plugins/compress.mjs'
 import solidPlugin from './tools/plugins/solid.mjs'
-
+import { readdirSync } from './tools/utils.mjs'
+import path from 'node:path'
 export const outdir = './dist'
 export const serveport = 3000
 export const devport = 5000
 
-const entryPoints = [
-  { in: './src/index.tsx', out: 'index' },
-  { in: './public/index.html', out: 'index' },
-  { in: './public/favicon.png', out: 'favicon' },
-]
+function getEntryPoints() {
+  const entries = [{ in: './src/index.tsx', out: 'index' }]
+  const loaders = {}
+
+  readdirSync('./public/').forEach(file => {
+    const ext_name = path.extname(file)
+    entries.push({ in: file, out: path.basename(file, ext_name) })
+    loaders[ext_name] = 'copy'
+  })
+
+  return { entries, loaders }
+}
+
+const { entries, loaders } = getEntryPoints()
 
 const baseconf = {
-  entryPoints: entryPoints,
-  loader: {
-    '.html': 'copy',
-    '.ico': 'copy',
-    '.png': 'copy',
-  },
+  entryPoints: entries,
+  loader: loaders,
   bundle: true,
   color: true,
   plugins: [solidPlugin()],
