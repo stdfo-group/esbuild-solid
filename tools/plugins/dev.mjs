@@ -4,9 +4,6 @@ export default function () {
   return {
     name: 'esbuild:dev',
     async setup(build) {
-      if (!build.initialOptions.outdir) {
-        throw 'outdir not set'
-      }
       build.onLoad(
         {
           filter: /index.html$/,

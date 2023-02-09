@@ -6,7 +6,6 @@ import solidPlugin from './tools/plugins/solid.mjs'
 export const outdir = './dist'
 export const serveport = 3000
 export const devport = 5000
-export const devoutdir = './dist_dev'
 
 const entryPoints = [
   { in: './src/index.tsx', out: 'index' },
@@ -28,7 +27,7 @@ const baseconf = {
 
 export const devconf = {
   ...baseconf,
-  outdir: devoutdir,
+  outdir: './dist_dev',
   logLevel: 'debug',
   minify: false,
   plugins: [...baseconf.plugins, devPlugin()],
