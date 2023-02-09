@@ -1,8 +1,10 @@
-import { devPlugin, solidPlugin, statsPlugin } from './tools/esbuild_plugins.mjs'
+import devPlugin from './tools/plugins/dev.mjs'
+import statsPlugin from './tools/plugins/stats.mjs'
+import compressPlugin from './tools/plugins/compress.mjs'
+import solidPlugin from './tools/plugins/solid.mjs'
 
 export const outdir = './dist'
 export const serveport = 3000
-
 export const devport = 5000
 export const devoutdir = './dist_dev'
 
@@ -37,5 +39,10 @@ export const prodconf = {
   minify: true,
   logLevel: 'info',
   metafile: true,
-  plugins: [...baseconf.plugins, statsPlugin('./stats')],
+  plugins: [...baseconf.plugins, compressPlugin()],
+}
+
+export const statsconf = {
+  ...prodconf,
+  plugins: [...prodconf.plugins, statsPlugin(outdir)],
 }
