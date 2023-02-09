@@ -15,6 +15,7 @@ const contentTypesByExtension = {
   '.css': 'text/css',
   '.js': 'application/javascript',
   '.ico': 'image/x-icon',
+  '.png': 'image/png',
 }
 
 const endocdingToExtension = {

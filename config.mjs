@@ -11,7 +11,7 @@ export const devoutdir = './dist_dev'
 const entryPoints = [
   { in: './src/index.tsx', out: 'index' },
   { in: './public/index.html', out: 'index' },
-  { in: './public/favicon.ico', out: 'favicon' },
+  { in: './public/favicon.png', out: 'favicon' },
 ]
 
 const baseconf = {
@@ -19,6 +19,7 @@ const baseconf = {
   loader: {
     '.html': 'copy',
     '.ico': 'copy',
+    '.png': 'copy',
   },
   bundle: true,
   color: true,
@@ -44,5 +45,5 @@ export const prodconf = {
 
 export const statsconf = {
   ...prodconf,
-  plugins: [...prodconf.plugins, statsPlugin(outdir)],
+  plugins: [...baseconf.plugins, statsPlugin(outdir)],
 }
