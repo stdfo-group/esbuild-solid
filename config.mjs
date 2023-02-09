@@ -1,9 +1,11 @@
-import devPlugin from './tools/plugins/dev.mjs'
-import statsPlugin from './tools/plugins/stats.mjs'
-import compressPlugin from './tools/plugins/compress.mjs'
-import solidPlugin from './tools/plugins/solid.mjs'
-import { readdirSync } from './tools/utils.mjs'
 import path from 'node:path'
+import cleanPlugin from './tools/plugins/clean.mjs'
+import compressPlugin from './tools/plugins/compress.mjs'
+import devPlugin from './tools/plugins/dev.mjs'
+import solidPlugin from './tools/plugins/solid.mjs'
+import statsPlugin from './tools/plugins/stats.mjs'
+import { readdirSync } from './tools/utils.mjs'
+
 export const outdir = './dist'
 export const serveport = 3000
 export const devport = 5000
@@ -45,7 +47,7 @@ export const prodconf = {
   minify: true,
   logLevel: 'info',
   metafile: true,
-  plugins: [...baseconf.plugins, compressPlugin()],
+  plugins: [...baseconf.plugins, compressPlugin(), cleanPlugin([outdir])],
 }
 
 export const statsconf = {
