@@ -9,114 +9,98 @@ import { outdir, serveport } from '../config.mjs'
 const serveDir = process.argv[2] || outdir
 // eslint-disable-next-line no-undef
 const port = process.argv[3] || serveport
-
-const contentTypesByExtension = {
+const mimeTypes = {
   '.html': 'text/html',
   '.css': 'text/css',
   '.js': 'application/javascript',
   '.ico': 'image/x-icon',
   '.png': 'image/png',
 }
+const defaultHeaders = { 'access-control-allow-origin': '*', 'Content-Type': 'text/plain' }
+const cache = createCache(serveDir)
+const fileNames = Object.keys(cache)
 
-const endocdingToExtension = {
-  gzip: '.gz',
-  br: '.br',
-}
-
-function getKeyByValue(object, value) {
-  return Object.keys(object).find(key => object[key] === value)
-}
-
-function preloadContentEncodings() {
-  // TODO: replace via generator
-  let result = { gzip: [], br: [] }
-  const extensions = Object.values(endocdingToExtension)
-
-  readdirSync(serveDir).forEach(file => {
-    extensions.forEach(element => {
-      const key = getKeyByValue(endocdingToExtension, element)
-      if (file.endsWith(element)) {
-        result[key] = [...result[key], file.replace('.br', '').replace('.gz', '')]
-      }
-    })
+function createCache(dir) {
+  const result = {}
+  readdirSync(dir).forEach(file => {
+    const isGzip = file.endsWith('.gz')
+    const isBrotli = file.endsWith('.br')
+    const sourceFile = file.replace('.gz', '').replace('.br', '')
+    result[sourceFile] = {
+      filename: sourceFile,
+      gzip: result[sourceFile]?.gzip || (isGzip && file),
+      brotli: result[sourceFile]?.brotli || (isBrotli && file),
+      mime: result[sourceFile]?.mime ?? mimeTypes[path.extname(sourceFile)],
+    }
   })
   return result
 }
 
-function getEncodings(req) {
+function getCachedInfo(req, cache) {
+  const uri = url.parse(req.url).pathname
+  const filename = path.join(serveDir, uri.length == 1 ? 'index.html' : uri)
+  const result = {
+    from_url: filename,
+    from_cache: null,
+    headers: { 'access-control-allow-origin': '*', 'Content-Type': cache[filename]?.mime ?? null },
+  }
   const headers = req.headers
-  let encodingType = []
-  if (headers && headers['accept-encoding']) {
+
+  if (headers && headers['accept-encoding'] && fileNames.indexOf(filename) >= 0) {
     const requestEncodings = headers['accept-encoding'].split(',').map(el => el.trim())
 
-    if (requestEncodings.includes('br')) {
-      encodingType.push('br')
-    }
-    if (requestEncodings.includes('gzip') || requestEncodings.includes('compress') || requestEncodings.includes('*')) {
-      encodingType.push('gzip')
+    if (cache[filename].brotli && requestEncodings.includes('br')) {
+      result.from_cache = cache[filename].brotli
+      result.headers['Content-Encoding'] = 'br'
+    } else if (
+      cache[filename].gzip &&
+      (requestEncodings.includes('gzip') || requestEncodings.includes('compress') || requestEncodings.includes('*'))
+    ) {
+      result.from_cache = cache[filename].gzip
+      result.headers['Content-Encoding'] = 'gzip'
+    } else {
+      result.from_cache = filename
+      return result
     }
   }
-  return encodingType
+
+  return result
+}
+
+function writeReponse(response, data, code = 200, headers = defaultHeaders) {
+  response.writeHead(code, headers)
+  response.write(data)
+  response.end()
 }
 
 function handler(request, response) {
   const startTime = performance.now()
-  const uri = url.parse(request.url).pathname
-  let filename = path.join(serveDir, uri)
+  let cachedInfo = getCachedInfo(request, cache)
 
-  if (!fs.existsSync(filename)) {
-    response.writeHead(404, { 'Content-Type': 'text/plain' })
-    response.write('404 Not Found\n')
-    response.end()
+  if (cachedInfo.from_cache == null) {
+    writeReponse(response, '404 Not Found\n', 404)
+    const endTime = (performance.now() - startTime).toFixed(3)
+    console.warn(`404 ${request.method} ${cachedInfo.from_url} --- ${cachedInfo.from_cache} --- ${endTime} ms`)
     return
   }
 
-  if (fs.statSync(filename).isDirectory()) {
-    filename += 'index.html'
-  }
-
-  let headers = { 'access-control-allow-origin': '*' }
-
-  const contentType = contentTypesByExtension[path.extname(filename)]
-  if (contentType) {
-    headers['Content-Type'] = contentType
-  }
-
-  const encodings = getEncodings(request)
-  if (encodings != []) {
-    for (let i = 0; i < encodings.length; i++) {
-      const curEncoding = encodings[i]
-      if (contents[curEncoding].find(i => i === filename)) {
-        const tmpFilename = filename + endocdingToExtension[curEncoding]
-        if (fs.existsSync(tmpFilename)) {
-          filename = tmpFilename
-          response.setHeader('Content-Encoding', curEncoding)
-        }
-        break
-      }
-    }
-  }
-
-  fs.readFile(filename, 'binary', function (err, file) {
+  fs.readFile(cachedInfo.from_cache, 'binary', function (err, file) {
     if (err) {
-      response.writeHead(500, { 'Content-Type': 'text/plain' })
-      response.write(err + '\n')
-      response.end()
+      writeReponse(response, err + '\n', 500)
+      const endTime = (performance.now() - startTime).toFixed(3)
+      console.error(
+        `${err}\n\n500 ${request.method} ${cachedInfo.from_url} --- ${cachedInfo.from_cache} --- ${endTime} ms`
+      )
       return
     }
 
-    response.writeHead(200, headers)
+    response.writeHead(200, cachedInfo.headers)
     response.write(file, 'binary')
     response.end()
     const endTime = (performance.now() - startTime).toFixed(3)
-    console.log(`${request.method} ${uri} --- ${filename} --- ${endTime} ms`)
+    console.log(`200 ${request.method} ${cachedInfo.from_url} --- ${cachedInfo.from_cache} --- ${endTime} ms`)
   })
 }
 
-const contents = preloadContentEncodings()
-
 http.createServer(handler).listen(parseInt(port, 10))
-
-console.log(
-  `Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown, CTRL + F5 for favicon`
-)
+console.log(`Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown`)
