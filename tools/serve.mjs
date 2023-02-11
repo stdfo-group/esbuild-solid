@@ -5,6 +5,18 @@ import fs from 'node:fs'
 import { readdirSync } from './utils.mjs'
 import { outdir, serveport } from '../config.mjs'
 
+class Pipeline {
+  #context = { logger: console.log }
+  constructor(context) {
+    Object.assign(this.#context, context)
+  }
+
+  then(func) {
+    !this.#context.finalize && func(this.#context)
+    return this
+  }
+}
+
 // eslint-disable-next-line no-undef
 const serveDir = process.argv[2] || outdir
 // eslint-disable-next-line no-undef
@@ -67,41 +79,50 @@ function getCachedInfo(req, cache) {
   return result
 }
 
-function writeReponse(response, data, code = 200, headers = defaultHeaders) {
+function writeReponse(response, data, code = 200, encoding = 'utf-8', headers = defaultHeaders) {
   response.writeHead(code, headers)
-  response.write(data)
+  response.write(data, encoding)
   response.end()
 }
 
-function handler(request, response) {
-  const startTime = performance.now()
-  let cachedInfo = getCachedInfo(request, cache)
-
-  if (cachedInfo.from_cache == null) {
-    writeReponse(response, '404 Not Found\n', 404)
-    const endTime = (performance.now() - startTime).toFixed(3)
-    console.warn(`404 ${request.method} ${cachedInfo.from_url} --- ${cachedInfo.from_cache} --- ${endTime} ms`)
+const startPerf = ctx => (ctx.startExecute = performance.now())
+const useCache = ctx => (ctx.cachedInfo = getCachedInfo(ctx.req, cache))
+const writeResp = ctx => {
+  if (ctx.cachedInfo.from_cache == null) {
+    ctx.logger = console.warn
+    writeReponse(ctx.res, '404 Not Found\n', 404)
     return
   }
 
-  fs.readFile(cachedInfo.from_cache, 'binary', function (err, file) {
+  fs.readFile(ctx.cachedInfo.from_cache, 'binary', function (err, file) {
     if (err) {
-      writeReponse(response, err + '\n', 500)
-      const endTime = (performance.now() - startTime).toFixed(3)
-      console.error(
-        `${err}\n\n500 ${request.method} ${cachedInfo.from_url} --- ${cachedInfo.from_cache} --- ${endTime} ms`
-      )
+      writeReponse(ctx.res, err + '\n', 500)
+      ctx.logger = console.error
+      ctx.err = err
       return
     }
 
-    response.writeHead(200, cachedInfo.headers)
-    response.write(file, 'binary')
-    response.end()
-    const endTime = (performance.now() - startTime).toFixed(3)
-    console.log(`200 ${request.method} ${cachedInfo.from_url} --- ${cachedInfo.from_cache} --- ${endTime} ms`)
+    writeReponse(ctx.res, file, 200, 'binary', ctx.cachedInfo.headers)
   })
 }
+const endPerf = ctx => (ctx.endExecute = performance.now())
+const logStat = ctx => {
+  const endTime = (ctx.endExecute - ctx.startExecute).toFixed(3)
+  ctx.err && ctx.logger(ctx.err)
+  ctx.logger(
+    `${ctx.res.statusCode} ${ctx.req.method} ${ctx.cachedInfo.from_url} --- ${ctx.cachedInfo.from_cache} --- ${endTime} ms`
+  )
+}
 
-http.createServer(handler).listen(parseInt(port, 10), _ => {
-  console.log(`Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown`)
-})
+http
+  .createServer((req, res) => {
+    new Pipeline({ req, res, logger: console.log })
+      .then(startPerf)
+      .then(useCache)
+      .then(writeResp)
+      .then(endPerf)
+      .then(logStat)
+  })
+  .listen(parseInt(port, 10), _ => {
+    console.log(`Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown`)
+  })

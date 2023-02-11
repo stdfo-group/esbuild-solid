@@ -13,7 +13,8 @@
     "prettier": "prettier --check --ignore-unknown --cache .",
     "prettier:fix": "prettier --write --list-different --cache .",
     "serve": "node ./tools/serve.mjs",
-    "stats": "node ./tools/stats.mjs"
+    "stats": "node ./tools/stats.mjs",
+    "testpipe": "node ./tools/testpipe.mjs"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,7 +24,7 @@
     "babel-preset-solid": "1.6.10",
     "esbuild": "0.17.7",
     "esbuild-visualizer": "0.4.0",
-    "eslint": "8.33.0",
+    "eslint": "8.34.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-solid": "0.9.4",
