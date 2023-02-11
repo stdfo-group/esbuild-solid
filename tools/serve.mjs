@@ -30,7 +30,7 @@ function createCache(dir) {
       filename: sourceFile,
       gzip: result[sourceFile]?.gzip || (isGzip && file),
       brotli: result[sourceFile]?.brotli || (isBrotli && file),
-      mime: result[sourceFile]?.mime ?? mimeTypes[path.extname(sourceFile)],
+      mime: mimeTypes[path.extname(sourceFile)],
     }
   })
   return result
@@ -102,5 +102,6 @@ function handler(request, response) {
   })
 }
 
-http.createServer(handler).listen(parseInt(port, 10))
-console.log(`Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown`)
+http.createServer(handler).listen(parseInt(port, 10), _ => {
+  console.log(`Static file server running at\n  => http://localhost:${port}/ \nCTRL + C to shutdown`)
+})
