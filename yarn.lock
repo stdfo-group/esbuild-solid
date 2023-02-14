@@ -686,15 +686,15 @@ available-typed-arrays@^1.0.5:
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
 babel-plugin-jsx-dom-expressions@^0.35.15:
-  version "0.35.15"
-  resolved "https://registry.yarnpkg.com/babel-plugin-jsx-dom-expressions/-/babel-plugin-jsx-dom-expressions-0.35.15.tgz#b107df0e8c7ae64b15d24ca511a7957e6ccc56f2"
-  integrity sha512-33GQnanjYKefOTO2lQK6EaKXPJ1W8vtzvBneGfhKaOZHQJLqe61P93jP0TLTz67sqsA0m1ph1cNdGpLc/Nx2Xg==
+  version "0.35.16"
+  resolved "https://registry.yarnpkg.com/babel-plugin-jsx-dom-expressions/-/babel-plugin-jsx-dom-expressions-0.35.16.tgz#43e72462f9450bb2aace741dca97b776ed4e7b7a"
+  integrity sha512-Z8vaeXRdtI4qyq3bmQiLjiZnbjn2Rr0mjpXMwN+QxHbWjtlAFOJSHlkcxbrwPz/DdcfSgkmZM0Atvt/zMLeLyA==
   dependencies:
     "@babel/helper-module-imports" "7.18.6"
     "@babel/plugin-syntax-jsx" "^7.18.6"
     "@babel/types" "^7.20.7"
     html-entities "2.3.3"
-    validate-html-nesting "^1.2.0"
+    validate-html-nesting "^1.2.1"
 
 babel-preset-solid@1.6.10:
   version "1.6.10"
@@ -747,9 +747,9 @@ callsites@^3.0.0:
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
 caniuse-lite@^1.0.30001449:
-  version "1.0.30001451"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001451.tgz#2e197c698fc1373d63e1406d6607ea4617c613f1"
-  integrity sha512-XY7UbUpGRatZzoRft//5xOa69/1iGJRBlrieH6QYrkKLIFn3m7OVEJ81dSrKoy2BnKsdbX5cLrOispZNYo9v2w==
+  version "1.0.30001452"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001452.tgz#dff7b8bb834b3a91808f0a9ff0453abb1fbba02a"
+  integrity sha512-Lkp0vFjMkBB3GTpLR8zk4NwW5EdRdnitwYJHDOOKIU85x4ckYCPQ+9WlVvSVClHxVReefkUMtWZH2l9KGlD51w==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -1925,10 +1925,10 @@ solid-icons@1.0.4:
   resolved "https://registry.yarnpkg.com/solid-icons/-/solid-icons-1.0.4.tgz#13eb122fe927110e2463c96d226492fb837a9802"
   integrity sha512-gJTp4in3+OYCs9WvDkSLt4Los2unR3Uoder8wjh15GsfP20xiNOLfPTJllXmn+fI8+k3x7bRYtLGIgWd9fUQug==
 
-solid-js@1.6.10:
-  version "1.6.10"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.6.10.tgz#fbd8e0a4adfe7b38da1885170369ede6a1cc7379"
-  integrity sha512-Sf0e6PQCEFkFtbPq0L+93Ua81YQOefBEbvDJ0YXT92b6Lzw0k7UvzSd2l1BbYM+yzE3UmepU1tyMDc/3nIByjA==
+solid-js@1.6.11:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.6.11.tgz#263a512bf94efd89245a77f58dc18c195302237f"
+  integrity sha512-JquQQHPArGq+i2PLURxJ99Pcz2/1docpbycSio/cKSA0SeI3z5zRjy0TNcH4NRYvbOLrcini+iovXwnexKabyw==
   dependencies:
     csstype "^3.1.0"
 
@@ -2072,7 +2072,7 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-validate-html-nesting@^1.2.0:
+validate-html-nesting@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/validate-html-nesting/-/validate-html-nesting-1.2.1.tgz#bc8fb1527be408ec4a0c254b251462aba2423f68"
   integrity sha512-T1ab131NkP3BfXB7KUSgV7Rhu81R2id+L6NaJ7NypAAG5iV6gXnPpQE5RK1fvb+3JYsPTL+ihWna5sr5RN9gaQ==
