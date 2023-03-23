@@ -13,8 +13,7 @@
     "prettier": "prettier --check --ignore-unknown --cache .",
     "prettier:fix": "prettier --write --list-different --cache .",
     "serve": "node ./tools/serve.mjs",
-    "stats": "node ./tools/stats.mjs",
-    "testpipe": "node ./tools/testpipe.mjs"
+    "stats": "node ./tools/stats.mjs"
   },
   "license": "MIT",
   "devDependencies": {
