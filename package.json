@@ -17,23 +17,23 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "7.21.3",
-    "@babel/preset-typescript": "7.21.0",
-    "@typescript-eslint/parser": "5.56.0",
-    "babel-preset-solid": "1.6.13",
-    "esbuild": "0.17.12",
+    "@babel/core": "7.21.4",
+    "@babel/preset-typescript": "7.21.4",
+    "@typescript-eslint/parser": "5.57.1",
+    "babel-preset-solid": "1.7.1",
+    "esbuild": "0.17.15",
     "esbuild-visualizer": "0.4.0",
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-solid": "0.11.0",
-    "prettier": "2.8.6",
+    "eslint-plugin-solid": "0.12.0",
+    "prettier": "2.8.7",
     "typescript": "npm:@kidonng/typescript"
   },
   "dependencies": {
     "@suid/material": "0.11.1",
     "solid-app-router": "0.4.2",
     "solid-icons": "1.0.4",
-    "solid-js": "1.6.15"
+    "solid-js": "1.7.1"
   }
 }
